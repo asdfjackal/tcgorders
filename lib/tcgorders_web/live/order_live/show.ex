@@ -24,6 +24,7 @@ defmodule TCGOrdersWeb.OrderLive.Show do
         <:item title="Order">{@order.order_id}</:item>
         <:item title="Ordered at">{@order.ordered_at}</:item>
         <:item title="Status">{@order.status}</:item>
+        <:item title="Received">{@order.received}</:item>
       </.list>
     </Layouts.app>
     """

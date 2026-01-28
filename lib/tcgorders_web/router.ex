@@ -69,6 +69,8 @@ defmodule TCGOrdersWeb.Router do
       live "/items/new", ItemLive.Form, :new
       live "/items/:id", ItemLive.Show, :show
       live "/items/:id/edit", ItemLive.Form, :edit
+
+      live "/import", ImportLive.Index, :index
     end
 
     post "/users/update-password", UserSessionController, :update_password

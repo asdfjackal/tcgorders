@@ -17,6 +17,7 @@ defmodule TCGOrdersWeb.OrderLive.Form do
         <.input field={@form[:order_id]} type="text" label="Order" />
         <.input field={@form[:ordered_at]} type="date" label="Ordered at" />
         <.input field={@form[:status]} type="text" label="Status" />
+        <.input field={@form[:received]} type="checkbox" label="Status" />
         <footer>
           <.button phx-disable-with="Saving..." variant="primary">Save Order</.button>
           <.button navigate={return_path(@current_scope, @return_to, @order)}>Cancel</.button>
@@ -57,7 +58,9 @@ defmodule TCGOrdersWeb.OrderLive.Form do
 
   @impl true
   def handle_event("validate", %{"order" => order_params}, socket) do
-    changeset = Orders.change_order(socket.assigns.current_scope, socket.assigns.order, order_params)
+    changeset =
+      Orders.change_order(socket.assigns.current_scope, socket.assigns.order, order_params)
+
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 

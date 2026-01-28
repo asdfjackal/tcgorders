@@ -24,6 +24,7 @@ defmodule TCGOrdersWeb.OrderLive.Index do
         <:col :let={{_id, order}} label="Order">{order.order_id}</:col>
         <:col :let={{_id, order}} label="Ordered at">{order.ordered_at}</:col>
         <:col :let={{_id, order}} label="Status">{order.status}</:col>
+        <:col :let={{_id, order}} label="Received">{order.received}</:col>
         <:action :let={{_id, order}}>
           <div class="sr-only">
             <.link navigate={~p"/orders/#{order}"}>Show</.link>

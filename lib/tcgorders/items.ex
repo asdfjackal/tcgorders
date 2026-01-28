@@ -62,6 +62,14 @@ defmodule TCGOrders.Items do
     Repo.get_by!(Item, id: id, user_id: scope.user.id)
   end
 
+  def get_item_by_order_and_number(%Scope{} = scope, order_id, item_number) do
+    Repo.get_by(Item,
+      order_id: order_id,
+      item_number: item_number,
+      user_id: scope.user.id
+    )
+  end
+
   @doc """
   Creates a item.
 

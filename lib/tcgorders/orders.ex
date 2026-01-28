@@ -62,6 +62,10 @@ defmodule TCGOrders.Orders do
     Repo.get_by!(Order, id: id, user_id: scope.user.id)
   end
 
+  def get_order_by_order_id(%Scope{} = scope, order_id) do
+    Repo.get_by(Order, order_id: order_id, user_id: scope.user.id)
+  end
+
   @doc """
   Creates a order.
 
