@@ -59,10 +59,7 @@ defmodule TCGOrdersWeb.ImportLive.Index do
     csv = parse_csv(import_params["csv"])
     import_csv(csv, socket.assigns.current_scope)
 
-    changeset = changeset(%{csv: ""}, import_params)
-    {:noreply, assign(socket, form: to_form(changeset, action: :validate, as: "import-form"))}
-
-    # {:noreply, push_patch(socket, to: ~p"/orders")}
+    {:noreply, push_navigate(socket, to: ~p"/orders")}
   end
 
   def parse_csv(raw_csv) do
