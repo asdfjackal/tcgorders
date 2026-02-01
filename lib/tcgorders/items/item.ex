@@ -6,6 +6,8 @@ defmodule TCGOrders.Items.Item do
   @foreign_key_type :binary_id
   schema "items" do
     field :name, :string
+    field :scryfall_name, :string
+    field :preview_uri, :string
     field :item_number, :integer
     field :tags, {:array, :string}
     field :user_id, :binary_id
@@ -18,7 +20,15 @@ defmodule TCGOrders.Items.Item do
   @doc false
   def changeset(item, attrs, user_scope) do
     item
-    |> cast(attrs, [:name, :item_number, :tags, :order_id, :project_id])
+    |> cast(attrs, [
+      :name,
+      :scryfall_name,
+      :preview_uri,
+      :item_number,
+      :tags,
+      :order_id,
+      :project_id
+    ])
     |> validate_required([:name, :item_number, :order_id])
     |> put_change(:user_id, user_scope.user.id)
   end

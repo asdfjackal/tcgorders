@@ -55,7 +55,19 @@ defmodule TCGOrdersWeb.OrderLive.Index do
           </div>
           <div class="divider m-0"></div>
           <ul>
-            <li :for={item <- order.items}>{item.name}</li>
+            <li :for={item <- order.items}>
+              <%= if item.preview_uri do %>
+                <div class="tooltip tooltip-right">
+                  <div class="tooltip-content">
+                    <image src={item.preview_uri} />
+                    <%!-- <image src="https://cards.scryfall.io/normal/front/1/0/101d22c6-830d-4908-9003-6b206f694eba.jpg?1738356526" /> --%>
+                  </div>
+                  {item.name}
+                </div>
+              <% else %>
+                <span>{item.name}</span>
+              <% end %>
+            </li>
           </ul>
           <div class="card-actions justify-end">
             <span

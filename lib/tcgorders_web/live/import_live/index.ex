@@ -75,9 +75,34 @@ defmodule TCGOrdersWeb.ImportLive.Index do
     }
   end
 
+  def get_preview_uri(name) do
+    search = URI.encode_www_form(name)
+    uri = "https://api.scryfall.com/cards/search?q=" <> search
+
+    case(Req.get(uri)) do
+      {:ok, response} ->
+        if response.body["total_cards"] > 0 do
+          hd(response.body["data"])["image_uris"]["normal"]
+        else
+          nil
+        end
+
+      {:error, _} ->
+        nil
+    end
+  end
+
   def transform_row_to_item(row, order) do
+    scryfall_name =
+      case Regex.run(~r/^[^\(]+/, row["Product Name"]) do
+        [name | _] -> name
+        nil -> nil
+      end
+
     %{
       name: row["Product Name"],
+      scryfall_name: scryfall_name,
+      preview_uri: get_preview_uri(scryfall_name),
       item_number: String.to_integer(row["Item Number"]),
       order_id: order.id
     }
