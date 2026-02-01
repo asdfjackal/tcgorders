@@ -15,7 +15,8 @@ defmodule TCGOrders.Application do
       # Start a worker by calling: TCGOrders.Worker.start_link(arg)
       # {TCGOrders.Worker, arg},
       # Start to serve requests, typically the last entry
-      TCGOrdersWeb.Endpoint
+      TCGOrdersWeb.Endpoint,
+      {Task.Supervisor, name: TCGOrders.TaskSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

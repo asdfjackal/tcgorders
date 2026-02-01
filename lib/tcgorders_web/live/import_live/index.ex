@@ -81,10 +81,37 @@ defmodule TCGOrdersWeb.ImportLive.Index do
 
     case(Req.get(uri)) do
       {:ok, response} ->
-        if response.body["total_cards"] > 0 do
-          hd(response.body["data"])["image_uris"]["normal"]
+        IO.inspect(name, label: "Searching Scryfall for")
+
+        if Map.has_key?(response.body, "total_cards") do
+          IO.inspect(Enum.map(response.body["data"], fn card -> card["name"] end),
+            label: "Found Cards"
+          )
         else
-          nil
+          IO.inspect("No cards found", label: "Scryfall Search Result")
+        end
+
+        cond do
+          Map.has_key?(response.body, "total_cards") != true ->
+            nil
+
+          response.body["total_cards"] == 1 ->
+            hd(response.body["data"])["image_uris"]["normal"]
+
+          response.body["total_cards"] > 1 ->
+            first_exact_match =
+              Enum.find(response.body["data"], fn card ->
+                String.downcase(card["name"]) == String.downcase(name)
+              end)
+
+            if first_exact_match do
+              first_exact_match["image_uris"]["normal"]
+            else
+              nil
+            end
+
+          true ->
+            nil
         end
 
       {:error, _} ->
@@ -102,10 +129,30 @@ defmodule TCGOrdersWeb.ImportLive.Index do
     %{
       name: row["Product Name"],
       scryfall_name: scryfall_name,
-      preview_uri: get_preview_uri(scryfall_name),
       item_number: String.to_integer(row["Item Number"]),
       order_id: order.id
     }
+  end
+
+  def update_item_scryfall_image(item, scope) do
+    if item.scryfall_name != nil do
+      case get_preview_uri(item.scryfall_name) do
+        nil -> :ok
+        uri -> Items.update_item(scope, item, %{preview_uri: uri})
+      end
+
+      Process.sleep(200)
+    end
+  end
+
+  def start_scryfall_fetcher(scope) do
+    Task.Supervisor.start_child(TCGOrders.TaskSupervisor, fn ->
+      items = Items.list_items(scope)
+
+      Enum.map(items, fn item ->
+        update_item_scryfall_image(item, scope)
+      end)
+    end)
   end
 
   def import_csv(csv, scope) do
@@ -129,5 +176,7 @@ defmodule TCGOrdersWeb.ImportLive.Index do
         Items.create_item(scope, transform_row_to_item(row, order))
       end
     end)
+
+    start_scryfall_fetcher(scope)
   end
 end
