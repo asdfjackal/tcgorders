@@ -44,6 +44,23 @@ defmodule TCGOrders.Orders do
     Repo.all_by(Order, user_id: scope.user.id)
   end
 
+  def list_orders_with_items(%Scope{} = scope, "") do
+    Repo.all_by(Order, user_id: scope.user.id)
+    |> Repo.preload(:items)
+  end
+
+  def list_orders_with_items(%Scope{} = scope, search) do
+    search = "%" <> search <> "%"
+
+    query =
+      from o in Order,
+        join: i in assoc(o, :items),
+        where: ilike(i.name, ^search)
+
+    Repo.all_by(query, user_id: scope.user.id)
+    |> Repo.preload(:items)
+  end
+
   @doc """
   Gets a single order.
 

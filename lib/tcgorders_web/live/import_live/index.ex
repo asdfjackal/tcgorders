@@ -85,7 +85,6 @@ defmodule TCGOrdersWeb.ImportLive.Index do
 
   def import_csv(csv, scope) do
     Enum.each(csv, fn row ->
-      IO.inspect(row, label: "Importing row")
       order_id = row["Order Id"]
       order = Orders.get_order_by_order_id(scope, order_id)
 
@@ -97,11 +96,12 @@ defmodule TCGOrdersWeb.ImportLive.Index do
         end
 
       item = Items.get_item_by_order_and_number(scope, order.id, row["Item Number"])
+      IO.inspect(transform_row_to_item(row, order), label: "Importing Item")
 
       if item do
         Items.update_item(scope, item, transform_row_to_item(row, order))
       else
-        Items.create_item(scope, Map.put(transform_row_to_item(row, order), :order_id, order.id))
+        Items.create_item(scope, transform_row_to_item(row, order))
       end
     end)
   end

@@ -11,6 +11,11 @@ defmodule TCGOrders.Orders.Order do
     field :user_id, :binary_id
     field :received, :boolean, default: false
 
+    has_many :items, TCGOrders.Items.Item,
+      foreign_key: :order_id,
+      references: :id,
+      preload_order: [asc: :item_number]
+
     timestamps(type: :utc_datetime)
   end
 
