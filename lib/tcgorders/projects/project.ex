@@ -7,6 +7,7 @@ defmodule TCGOrders.Projects.Project do
   schema "projects" do
     field :name, :string
     field :user_id, :binary_id
+    has_many :items, TCGOrders.Items.Item, foreign_key: :project_id, references: :id
 
     timestamps(type: :utc_datetime)
   end

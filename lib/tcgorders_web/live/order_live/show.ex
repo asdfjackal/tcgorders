@@ -1,6 +1,7 @@
 defmodule TCGOrdersWeb.OrderLive.Show do
   use TCGOrdersWeb, :live_view
 
+  alias TCGOrders.Repo
   alias TCGOrders.Orders
 
   @impl true
@@ -23,9 +24,20 @@ defmodule TCGOrdersWeb.OrderLive.Show do
       <.list>
         <:item title="Order">{@order.order_id}</:item>
         <:item title="Ordered at">{@order.ordered_at}</:item>
-        <:item title="Status">{@order.status}</:item>
-        <:item title="Received">{@order.received}</:item>
+        <:item title="Status">
+          {Orders.get_order_status(@order)}
+        </:item>
       </.list>
+      <.table id="items" rows={@order.items}>
+        <:col :let={item} label="Name">{item.name}</:col>
+        <:action :let={item}>
+          <%= if item.project do %>
+            In project: {item.project.name}
+          <% else %>
+            <.link navigate={~p"/items/#{item}/assign_project"}>Add to Project</.link>
+          <% end %>
+        </:action>
+      </.table>
     </Layouts.app>
     """
   end
@@ -39,7 +51,11 @@ defmodule TCGOrdersWeb.OrderLive.Show do
     {:ok,
      socket
      |> assign(:page_title, "Show Order")
-     |> assign(:order, Orders.get_order!(socket.assigns.current_scope, id))}
+     |> assign(
+       :order,
+       Orders.get_order!(socket.assigns.current_scope, id)
+       |> Repo.preload(items: [:project])
+     )}
   end
 
   @impl true

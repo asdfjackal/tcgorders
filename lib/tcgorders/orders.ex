@@ -165,4 +165,23 @@ defmodule TCGOrders.Orders do
 
     Order.changeset(order, attrs, scope)
   end
+
+  def get_order_status(%Order{} = order) do
+    cond do
+      order.received ->
+        "Delivered"
+
+      order.status == "unknown" ->
+        "Not Shipped"
+
+      order.status == "with tracking" || order.status == "without tracking" ->
+        "Shipped"
+
+      order.status == "canceled" ->
+        "Canceled"
+
+      true ->
+        "Unknown"
+    end
+  end
 end

@@ -69,6 +69,7 @@ defmodule TCGOrdersWeb.Router do
       live "/items/new", ItemLive.Form, :new
       live "/items/:id", ItemLive.Show, :show
       live "/items/:id/edit", ItemLive.Form, :edit
+      live "/items/:id/assign_project", ItemLive.AssignProject, :edit
 
       live "/import", ImportLive.Index, :index
     end

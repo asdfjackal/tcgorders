@@ -47,7 +47,7 @@ defmodule TCGOrdersWeb.OrderLive.Index do
           <div class="card-title flex items-start">
             <div class="flex-1">
               <span>{order.ordered_at}</span>
-              <span :if={order.received}> - Delivered</span>
+              <span> -  {Orders.get_order_status(order)}</span>
             </div>
             <div class="flex-none">
               <span class="font-normal text-xs">{order.order_id}</span>
