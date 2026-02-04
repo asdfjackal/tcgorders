@@ -30,12 +30,13 @@ defmodule TCGOrdersWeb.OrderLive.Show do
       </.list>
       <.table id="items" rows={@order.items}>
         <:col :let={item} label="Name">{item.name}</:col>
+        <:col :let={item} label="Project">
+          {if item.project do
+            item.project.name
+          end}
+        </:col>
         <:action :let={item}>
-          <%= if item.project do %>
-            In project: {item.project.name}
-          <% else %>
-            <.link navigate={~p"/items/#{item}/assign_project"}>Add to Project</.link>
-          <% end %>
+          <.link navigate={~p"/items/#{item}/assign_project"}>Set Project</.link>
         </:action>
       </.table>
     </Layouts.app>

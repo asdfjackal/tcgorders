@@ -17,6 +17,9 @@ defmodule TCGOrdersWeb.ItemLive.Show do
           <.button variant="primary" navigate={~p"/items/#{@item}/edit?return_to=show"}>
             <.icon name="hero-pencil-square" /> Edit item
           </.button>
+          <.button variant="primary" navigate={~p"/items/#{@item}/assign_project"}>
+            <.icon name="hero-plus-circle" /> Set Project
+          </.button>
         </:actions>
       </.header>
 
